@@ -1,8 +1,9 @@
-FROM debian:bookworm as builder
+FROM debian:bookworm AS builder
 
 # properly setup debian sources
 ENV DEBIAN_FRONTEND noninteractive
-RUN echo "deb http://deb.debian.org/debian bookworm main\n\
+RUN rm -f /etc/apt/sources.list.d/debian.sources && \
+echo "deb http://deb.debian.org/debian bookworm main\n\
 deb-src http://deb.debian.org/debian bookworm main\n\
 deb http://deb.debian.org/debian bookworm-updates main\n\
 deb-src http://deb.debian.org/debian bookworm-updates main\n\
@@ -12,7 +13,7 @@ deb-src http://security.debian.org bookworm-security main\n\
 
 # install packages
 ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update &&  apt-get -y dist-upgrade && \
+RUN apt-get update && apt-get upgrade && \
     apt-get -y --force-yes install openssl dpkg-dev debhelper syslog-ng-core syslog-ng && \
     apt-get -y build-dep pure-ftpd-mysql && \
     mkdir /ftpdata && \
@@ -26,7 +27,10 @@ RUN apt-get update &&  apt-get -y dist-upgrade && \
     apt-get -y install openbsd-inetd \
     default-mysql-client && \
     dpkg -i /tmp/pure-ftpd-mysql/pure-ftpd-mysql*.deb && \
-    apt-mark hold pure-ftpd pure-ftpd-mysql pure-ftpd-common
+    apt-mark hold pure-ftpd pure-ftpd-mysql pure-ftpd-common && \
+    apt-get remove -y dpkg-dev && \
+    apt-get purge -y build-essential gcc g++ make cmake ninja-build pkg-config autoconf automake libtool && \
+    apt -y autoremove 
 
 # add docker user and group
 RUN groupadd -g 999 docker
