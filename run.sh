@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # mysql configuration
+# sadly, md5 support was removed in 1.0.50 so this is a breaking change
+# password hash can be generated with openssl -6 "plainpw"
 cat << EOM > /etc/pure-ftpd/db/mysql.conf
 #MYSQLSocket        /var/run/mysqld/mysqld.sock
 MYSQLServer         ${MYSQL_HOST:-mysql}
@@ -8,7 +10,7 @@ MYSQLPort           ${MYSQL_PORT:-3306}
 MYSQLUser           ${MYSQL_USER:-pureftpd}
 MYSQLPassword       ${MYSQL_PASSWORD:-password}
 MYSQLDatabase       ${MYSQL_DATABASE:-pureftpd}
-MYSQLCrypt          md5
+MYSQLCrypt          crypt
 MYSQLGetPW          SELECT Password FROM ftpd WHERE User="\L" AND status="1" AND (ipaccess = "*" OR ipaccess LIKE "\R")
 MYSQLGetUID         SELECT Uid FROM ftpd WHERE User="\L" AND status="1" AND (ipaccess = "*" OR ipaccess LIKE "\R")
 MYSQLGetGID         SELECT Gid FROM ftpd WHERE User="\L"AND status="1" AND (ipaccess = "*" OR ipaccess LIKE "\R")
