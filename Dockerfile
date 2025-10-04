@@ -1,13 +1,13 @@
-FROM debian:buster as builder
+FROM debian:bookworm as builder
 
 # properly setup debian sources
 ENV DEBIAN_FRONTEND noninteractive
-RUN echo "deb http://http.debian.net/debian buster main\n\
-deb-src http://http.debian.net/debian buster main\n\
-deb http://http.debian.net/debian buster-updates main\n\
-deb-src http://http.debian.net/debian buster-updates main\n\
-deb http://security.debian.org buster/updates main\n\
-deb-src http://security.debian.org buster/updates main\n\
+RUN echo "deb http://deb.debian.org/debian bookworm main\n\
+deb-src http://deb.debian.org/debian bookworm main\n\
+deb http://deb.debian.org/debian bookworm-updates main\n\
+deb-src http://deb.debian.org/debian bookworm-updates main\n\
+deb http://security.debian.org bookworm-security main\n\
+deb-src http://security.debian.org bookworm-security main\n\
 " > /etc/apt/sources.list
 
 # install packages
