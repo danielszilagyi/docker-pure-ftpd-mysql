@@ -13,7 +13,7 @@ deb-src http://security.debian.org bookworm-security main\n\
 
 # install packages
 ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update && apt-get upgrade && \
+RUN apt-get update && apt-get -y upgrade && \
     apt-get -y --force-yes install openssl dpkg-dev debhelper syslog-ng-core syslog-ng && \
     apt-get -y build-dep pure-ftpd-mysql && \
     mkdir /ftpdata && \
