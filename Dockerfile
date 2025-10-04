@@ -28,7 +28,8 @@ RUN apt-get update && apt-get -y upgrade && \
     default-mysql-client && \
     dpkg -i /tmp/pure-ftpd-mysql/pure-ftpd-mysql*.deb && \
     apt-mark hold pure-ftpd pure-ftpd-mysql pure-ftpd-common && \
-    apt-get remove -y dpkg-dev syslog-ng-mod-python python3 && \
+    apt-get remove -y dpkg-dev libc-dev-bin libc-devtools libssl-dev libsodium-dev libc6-dev linux-libc-dev \
+    libmariadb-dev libmariadb-dev-compat syslog-ng-mod-python python3 && \
     apt-get purge -y build-essential gcc g++ make cmake ninja-build pkg-config autoconf automake libtool && \
     apt -y autoremove 
 
