@@ -2,6 +2,12 @@
 
 Pure-ftpd with MySQL, TLS, Quota, Bandwith control and Passive mode
 
+## Fork information
+
+This fork uses Debian Bookworm as base, and PureFTPD 1.0.50.
+This also means that md5 and other older password hash formats are unsupported.
+There is no migration, new password can be generated with `openssl passwd -6` command for example.
+
 ## Usage
 
 * Create a MySQL container and import `pureftp.sql` file to create the database
