@@ -1,7 +1,7 @@
 FROM debian:bookworm AS builder
 
 # properly setup debian sources
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 RUN rm -f /etc/apt/sources.list.d/debian.sources && \
 echo "deb http://deb.debian.org/debian bookworm main\n\
 deb-src http://deb.debian.org/debian bookworm main\n\
@@ -12,7 +12,7 @@ deb-src http://security.debian.org bookworm-security main\n\
 " > /etc/apt/sources.list
 
 # install packages
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get -y upgrade && \
     apt-get -y --force-yes install openssl dpkg-dev debhelper syslog-ng-core syslog-ng && \
     apt-get -y build-dep pure-ftpd-mysql && \
