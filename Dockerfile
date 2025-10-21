@@ -22,7 +22,7 @@ RUN apt-get update && apt-get -y upgrade && \
     apt-get source pure-ftpd-mysql && \
     cd pure-ftpd-* && \
     sed -i '/^optflags=/ s/$/ --without-capabilities/g' ./debian/rules && \
-    dpkg-buildpackage -b -uc && \
+    dpkg-buildpackage -j"$(nproc)" -b -uc && \
     dpkg -i /tmp/pure-ftpd-mysql/pure-ftpd-common*.deb && \
     apt-get -y install openbsd-inetd \
     default-mysql-client && \
