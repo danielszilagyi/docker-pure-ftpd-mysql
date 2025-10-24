@@ -29,26 +29,20 @@ FROM debian:bookworm
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Copy and install only built .deb files, remove installers/deps after
+COPY --from=builder /tmp/pure-ftpd-mysql/pure-ftpd*.deb /tmp/
+
 # Set up sources and runtime dependencies
 RUN rm -f /etc/apt/sources.list.d/debian.sources && \
-    cat <<EOF > /etc/apt/sources.list
-deb http://deb.debian.org/debian bookworm main
-deb http://deb.debian.org/debian bookworm-updates main
-deb http://security.debian.org bookworm-security main
-EOF
-RUN apt-get update && \
+    echo "deb http://deb.debian.org/debian bookworm main\ndeb-src http://deb.debian.org/debian bookworm main\ndeb http://deb.debian.org/debian bookworm-updates main\ndeb-src http://deb.debian.org/debian bookworm-updates main\ndeb http://security.debian.org bookworm-security main\ndeb-src http://security.debian.org bookworm-security main" > /etc/apt/sources.list && \
+    apt-get update && apt-get -y upgrade && \
     apt-get install -y --no-install-recommends \
         openssl syslog-ng-core syslog-ng openbsd-inetd default-mysql-client libsodium23 && \
     groupadd -g 999 docker && \
     useradd -u 111 -g 999 -d /dev/null -s /usr/sbin/nologin docker && \
     mkdir /ftpdata && \
-    chown -R docker:docker /ftpdata
-
-# Copy and install only built .deb files, remove installers/deps after
-COPY --from=builder /tmp/pure-ftpd-mysql/pure-ftpd-common*.deb /tmp/
-COPY --from=builder /tmp/pure-ftpd-mysql/pure-ftpd-mysql*.deb /tmp/
-
-RUN dpkg -i /tmp/pure-ftpd-common*.deb /tmp/pure-ftpd-mysql*.deb && \
+    chown -R docker:docker /ftpdata && \
+    dpkg -i /tmp/pure-ftpd-common*.deb /tmp/pure-ftpd-mysql*.deb && \
     rm -rf /var/lib/apt/lists/* /tmp/*.deb
 
 # Add entrypoint script and permissions
