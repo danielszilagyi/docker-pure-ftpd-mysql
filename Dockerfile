@@ -18,10 +18,14 @@ RUN apt-get update && apt-get -y upgrade && \
     apt-get -y build-dep pure-ftpd-mysql
 
 WORKDIR /tmp/pure-ftpd-mysql
+COPY rules /tmp/pureftpd-rules
 
 RUN apt-get source pure-ftpd-mysql && \
     cd pure-ftpd-* && \
-    sed -i '/^optflags=/ s/$/ --without-capabilities/g' ./debian/rules && \
+    cp /tmp/pureftpd-rules debian/rules && \
+    sed -i '/^Package: pure-ftpd-ldap/,/^$/d' debian/control && \
+    sed -i '/^Package: pure-ftpd-postgresql/,/^$/d' debian/control && \
+    rm -f debian/pure-ftpd-ldap* debian/pure-ftpd-postgresql* && \
     dpkg-buildpackage -j"$(nproc)" -b -uc
 
 # -------------------------------------------------------------------
