@@ -1,4 +1,4 @@
-FROM debian:bookworm AS builder
+FROM debian:trixie-slim AS builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV DEB_BUILD_OPTIONS=noddebs
@@ -6,12 +6,12 @@ ENV DEB_BUILD_OPTIONS=noddebs
 # Set up sources and install build dependencies
 RUN rm -f /etc/apt/sources.list.d/debian.sources && \
     cat <<EOF > /etc/apt/sources.list
-deb http://deb.debian.org/debian bookworm main
-deb-src http://deb.debian.org/debian bookworm main
-deb http://deb.debian.org/debian bookworm-updates main
-deb-src http://deb.debian.org/debian bookworm-updates main
-deb http://security.debian.org bookworm-security main
-deb-src http://security.debian.org bookworm-security main
+deb http://deb.debian.org/debian trixie main
+deb-src http://deb.debian.org/debian trixie main
+deb http://deb.debian.org/debian trixie-updates main
+deb-src http://deb.debian.org/debian trixie-updates main
+deb http://security.debian.org trixie-security main
+deb-src http://security.debian.org trixie-security main
 EOF
 RUN apt-get update && apt-get -y upgrade && \
     apt-get -y --force-yes install dpkg-dev debhelper && \
@@ -29,7 +29,7 @@ RUN apt-get source pure-ftpd-mysql && \
     dpkg-buildpackage -j"$(nproc)" -b -uc
 
 # -------------------------------------------------------------------
-FROM debian:bookworm
+FROM debian:trixie
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -38,7 +38,7 @@ COPY --from=builder /tmp/pure-ftpd-mysql/pure-ftpd*.deb /tmp/
 
 # Set up sources and runtime dependencies
 RUN rm -f /etc/apt/sources.list.d/debian.sources && \
-    echo "deb http://deb.debian.org/debian bookworm main\ndeb-src http://deb.debian.org/debian bookworm main\ndeb http://deb.debian.org/debian bookworm-updates main\ndeb-src http://deb.debian.org/debian bookworm-updates main\ndeb http://security.debian.org bookworm-security main\ndeb-src http://security.debian.org bookworm-security main" > /etc/apt/sources.list && \
+    echo "deb http://deb.debian.org/debian trixie main\ndeb-src http://deb.debian.org/debian trixie main\ndeb http://deb.debian.org/debian trixie-updates main\ndeb-src http://deb.debian.org/debian trixie-updates main\ndeb http://security.debian.org trixie-security main\ndeb-src http://security.debian.org trixie-security main" > /etc/apt/sources.list && \
     apt-get update && apt-get -y upgrade && \
     apt-get install -y --no-install-recommends \
         openssl syslog-ng-core syslog-ng openbsd-inetd default-mysql-client libsodium23 && \
