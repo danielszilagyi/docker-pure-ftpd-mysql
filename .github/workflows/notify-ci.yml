@@ -1,0 +1,31 @@
+name: Notify build repo (pureftpd)
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send repository_dispatch
+        env:
+          DISPATCH_TOKEN: ${{ secrets.DISPATCH_TOKEN }}
+          TARGET_REPO: ${{ vars.DISPATCH_TARGET }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          curl -fsSL -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${DISPATCH_TOKEN}" \
+            "https://api.github.com/repos/${TARGET_REPO}/dispatches" \
+            -d "$(jq -nc --arg sha "$SHA" '
+              {
+                event_type: "dep_changed",
+                client_payload: {
+                  dep: "pureftpd",
+                  ref: "master",
+                  sha: $sha
+                }
+              }')"
