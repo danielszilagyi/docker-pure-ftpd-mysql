@@ -48,7 +48,6 @@ RUN rm -f /etc/apt/sources.list.d/debian.sources && \
     dpkg -i /tmp/pure-ftpd-common*.deb /tmp/pure-ftpd-mysql*.deb && \
     rm -rf /var/lib/apt/lists/* /tmp/*.deb
 
-# Add entrypoint script and permissions
 COPY --chown=docker:docker run.sh /run.sh
 RUN chmod u+x /run.sh
 
