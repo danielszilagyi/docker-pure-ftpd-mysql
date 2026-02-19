@@ -33,7 +33,6 @@ FROM debian:trixie
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Copy and install only built .deb files, remove installers/deps after
 COPY --from=builder /tmp/pure-ftpd-mysql/pure-ftpd*.deb /tmp/
 
 # Set up sources and runtime dependencies
