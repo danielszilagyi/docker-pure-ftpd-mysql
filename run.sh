@@ -39,6 +39,7 @@ fi
 # start syslog service
 service syslog-ng start
 
+
 # run command
 # -l define login/mysql configuration
 # -J define TLS cypher
